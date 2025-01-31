@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login";
 import Homepage from "./Components/Homepage";
 
-const AppLayout = () => {
+const Scripts = () => {
     return (
         <Router>
             <Routes>
@@ -16,4 +16,4 @@ const AppLayout = () => {
 };
 
 const rootElement = ReactDOM.createRoot(document.getElementById("root"));
-rootElement.render(<AppLayout />);
+rootElement.render(<Scripts />);

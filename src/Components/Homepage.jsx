@@ -1,26 +1,46 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Box, Card, Typography } from "@mui/material";
-import darkTheme from "../util/darkTheme";
+import axios from "axios";
 
 const Homepage = () => {
     const navigate = useNavigate();
 
-    // Redirect to login if no token is found
     React.useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/");
-        }
+        const validateToken = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/");
+                    return;
+                }
+
+                const response = await axios.post(
+                    "http://localhost:8080/user/validate-token",
+                    {}, // No body needed
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                if (!response.data) {
+                    throw new Error("Invalid Token");
+                }
+            } catch (error) {
+                console.error("Token validation failed:", error);
+                localStorage.removeItem("token");
+                navigate("/");
+            }
+        };
+
+        validateToken();
     }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("token"); // Clear token
-        navigate("/"); // Redirect to login
+        navigate("/"); // Redirect to log-in
     };
 
     return (
-        <Container theme={darkTheme} sx={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Container sx={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Box sx={{
                 backgroundColor: "black",
                 width: "90%",
